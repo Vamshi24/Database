@@ -1,0 +1,199 @@
+<html>
+<?php
+session_start();
+if(!isset($_SESSION['myusername']) || $_SESSION['myusername'] == "cashier")
+{
+echo("login unsccessfull");
+header("location: http://localhost/project/jewels/login/main_login.php");
+}
+?>
+
+<head>
+<?php
+echo '<div style="margin:10px 10px 10px 1100px ;">';
+echo '<p style="text-align: left; width:150px;">';
+echo  "username:" . $_SESSION['myusername'] ;
+echo "</p>";
+echo ' <a href=" http://localhost/project/jewels/login/logout.php" style="text-align:right;">logout</a> ' ;
+echo "</div>";
+require_once('../../mysqli_connect.php');
+
+?>
+
+</head>
+
+<body>
+<div style="margin: 10px 10px 10px ; position: absolute;">
+<br/>
+<a href="http://localhost/project/jewels/employee/getemployeeinfo.php">employee</a>
+<br/><br/>
+
+<a href="http://localhost/project/jewels/customer/getcustomerinfo.php">customer</a>
+<br/>
+<br/>
+
+<a href="http://localhost/project/jewels/cashier/getcashierinfo.php">cashier</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/gold_smith/getgoldsmithinfo.php">goldsmith</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/jewellery_shop/getjewelleryshopinfo.php">jewelleryshop</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/materials/getmaterialsinfo.php">materials</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/payment/getpaymentinfo.php">payment</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/sale/getsaleinfo.php">sale</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/security/getsecurityinfo.php">security</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/order/getorderinfo.php">order</a>
+
+<br/>
+<br/>
+</div>
+
+<title>Add Employee</title>
+</head>
+<body>
+<div style="width: 1000px; margin-left: 160px; margin-top: 10px; position: absolute; top: 100px;"><?php
+
+if(isset($_POST['submit'])){
+    
+    $data_missing = array();
+    
+    if(empty($_POST['employee_id'])){
+
+        // Adds name to array
+        $data_missing[] = 'employee_id';
+
+    } else {
+
+        // Trim white space from the name and store the name
+        $employee_id = trim($_POST['employee_id']);
+
+    }
+
+    if(empty($_POST['houseno'])){
+
+        // Adds name to array
+        $data_missing[] = 'houseno';
+
+    } else{
+
+        // Trim white space from the name and store the name
+        $houseno = trim($_POST['houseno']);
+
+    }
+
+    if(empty($_POST['pincode'])){
+
+        // Adds name to array
+        $data_missing[] = 'pincode';
+
+    } else {
+
+        // Trim white space from the name and store the name
+        $pincode = trim($_POST['pincode']);
+
+    }
+
+    
+    if(empty($data_missing)){
+        
+        
+        $query = "INSERT INTO cashier (employee_id, houseno, pincode) VALUES (?, ?, ?)";
+        
+        $stmt = mysqli_prepare($dbc, $query);
+        
+        
+        mysqli_stmt_bind_param($stmt, "isi", $employee_id,
+                               $houseno, $pincode);
+        
+        mysqli_stmt_execute($stmt);
+        
+        $affected_rows = mysqli_stmt_affected_rows($stmt);
+        
+        if($affected_rows == 1){
+            
+            echo 'Cashier Entered';
+            
+            mysqli_stmt_close($stmt);
+            
+           // mysqli_close($dbc);
+            
+        } else {
+            
+            echo 'Error Occurred<br />';
+            echo mysqli_error();
+            
+            mysqli_stmt_close($stmt);
+            
+            //mysqli_close($dbc);
+            
+        }
+        
+    } else {
+        
+        echo 'You need to enter the following data<br />';
+        
+        foreach($data_missing as $missing){
+            
+            echo "$missing<br />";
+            
+        }
+        
+    }
+    
+}
+
+?>
+
+
+<form action="http://localhost/project/jewels/cashier/cashieradded.php" method="post">
+
+<b>Add a New Cashier </b>
+
+<?php
+//require_once('../../mysqli_connect.php');
+$query = "SELECT employee_id FROM employee";
+$result=mysqli_query($dbc, $query);
+$options="";
+
+while ($row=mysqli_fetch_array($result)) {
+
+    $id=$row["employee_id"];
+    $options.="<OPTION VALUE=\"$id\">".$id;
+}
+mysqli_close($dbc);
+?>
+
+<p>Employee_id:
+<select name="employee_id">
+<option value=0>Choose
+<?=$options?>
+</select>
+</p>
+
+<p>houseno:
+<input type="text" name="houseno" size="20" value="" />
+</p>
+
+<p>pincode:
+<input type="text" name="pincode" size="11" value="" />
+</p>
+
+<p>
+<input type="submit" name="submit" value="Send" />
+</p>
+
+</form>
+</div>
+</body>
+</html>

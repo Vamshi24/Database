@@ -1,0 +1,106 @@
+<html>
+<?php
+session_start();
+if(!isset($_SESSION['myusername']) || $_SESSION['myusername'] == "cashier")
+{
+echo("login unsccessfull");
+header("location: http://localhost/project/jewels/login/main_login.php");
+}
+?>
+
+<head>
+<?php
+echo '<div style="margin:10px 10px 10px 1100px ;">';
+echo '<p style="text-align: left; width:150px;">';
+echo  "username:" . $_SESSION['myusername'] ;
+echo "</p>";
+echo ' <a href=" http://localhost/project/jewels/login/logout.php" style="text-align:right;">logout</a> ' ;
+echo "</div>";
+?>
+
+</head>
+
+<body>
+<div style="margin: 10px 10px 10px ; position: absolute;">
+<br/>
+<a href="http://localhost/project/jewels/employee/getemployeeinfo.php">employee</a>
+<br/><br/>
+
+<a href="http://localhost/project/jewels/customer/getcustomerinfo.php">customer</a>
+<br/>
+<br/>
+
+<a href="http://localhost/project/jewels/cashier/getcashierinfo.php">cashier</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/gold_smith/getgoldsmithinfo.php">goldsmith</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/jewellery_shop/getjewelleryshopinfo.php">jewelleryshop</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/materials/getmaterialsinfo.php">materials</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/payment/getpaymentinfo.php">payment</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/sale/getsaleinfo.php">sale</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/security/getsecurityinfo.php">security</a>
+<br/>
+<br/>
+<a href="http://localhost/project/jewels/order/getorderinfo.php">order</a>
+
+<br/>
+<br/>
+</div>
+
+<title>Add Employee</title>
+</head>
+<body>
+<div style="width: 1000px; margin-left: 160px; margin-top: 10px; position: absolute; top: 100px;">
+<?php
+require_once('../../mysqli_connect.php');
+
+if(isset($_POST['update'])){
+$UpdateQuery = "UPDATE security SET company_name = '$_POST[company_name]', timings = '$_POST[timings]', 
+ WHERE employee_id ='$_POST[employee_id]'";
+if(mysqli_query($dbc, $UpdateQuery)){
+echo"Updated";
+}
+ else{
+echo "unable to update";
+}
+}
+ 
+$response = @mysqli_query($dbc, "SELECT * FROM security");
+ 
+echo '<table align="left"
+cellspacing="5" cellpadding="4">
+<tr>
+<td align="left"><b>employee_id</b></td>
+<td align="left"><b>company_name</b></td>
+<td align="left"><b>timings</b></td>
+</tr>';
+ 
+while($row = mysqli_fetch_array($response)){
+echo '<form action="updatesecurity.php" method ="post">';
+echo '<tr>';
+echo "<td align='left' style='display:none;'>" . "<input type = 'text' name = 'employee_id'  value ="  . $row['employee_id'] . " </td>";
+echo "<td align='left'>" . "<p>"  . $row['employee_id'] . "</p> </td>";
+
+echo "<td align='left'>" . "<input type = 'text' name = 'company_name' value ="  . $row['company_name'] .    " </td>";
+echo "<td align='left'>" . "<input type = 'text' name = 'timings' value ="  . $row['timings'] .    " </td>";
+
+echo "<td align='left'>" . "<input class = 'field' type = 'submit' name = 'update' value = 'UPDATE'>" . " </td>";
+echo "</tr>";
+echo "</form>";
+}
+echo "</table>";
+ 
+?>
+</div>
+</body>
+</html>
